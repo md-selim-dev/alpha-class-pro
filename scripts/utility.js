@@ -19,6 +19,12 @@ function setBackgroundColorById(elementId){
     element.classList.add('bg-orange-400');
 }
 
+//Remove key background color
+function removeBackgroundColorById(elementId){
+    const element = document.getElementById(elementId);
+    element.classList.remove('bg-orange-400');
+}
+
 // random alphabet generate 
 function getARandomAlphabet(){
     const alphabetSrting = 'abcdefghijklmnopqrstuvwxyz';
