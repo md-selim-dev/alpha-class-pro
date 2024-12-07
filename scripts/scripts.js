@@ -1,18 +1,40 @@
 
+function handleKeyboardKeyUpEvent(e) {
+    const playerPressed = e.key;
+
+    // game over for pressed Esc button
+    if(playerPressed === 'Escape'){
+        gameOver();
+    }
+    const currentAlphabetElement = document.getElementById('current-alphabet');
+    const currentAlphabet = currentAlphabetElement.innerText;
+    const expectedAlphabet = currentAlphabet.toLocaleLowerCase();
+
+    //check alphabet matched or not
+    if (playerPressed === expectedAlphabet) {
+        removeBackgroundColorById(expectedAlphabet);
+        const currentScore = getTextElementValueById('current-score')
+        const newScore = currentScore + 1;
+        setTextElementValueById('current-score', newScore)
+        continueGame()
+    }
+    else {
+        const currentLife = getTextElementValueById('current-life');
+        const newLife = currentLife - 1;
+        setTextElementValueById('current-life', newLife)
+
+        if (newLife === 0) {
+            gameOver();
+        }
+    }
+
+}
+
+document.addEventListener('keyup', handleKeyboardKeyUpEvent)
 
 
-// function play(){
-//     // Step-1: Hide the home screen. To hide home screen add the hidden class on the home screen.
-//     const homeSection = document.getElementById('home-screen');
-//     homeSection.classList.add('hidden');
-    
 
-//     // show the playground
-//     const playgroundSection = document.getElementById('play-ground');
-//     playgroundSection.classList.remove('hidden');
-// }
-
-function continueGame(){
+function continueGame() {
     // step -1 : generate a random alphabet
     const alphabet = getARandomAlphabet();
 
@@ -23,9 +45,23 @@ function continueGame(){
 }
 
 
-function play(){
+function play() {
     hideElementById('home-screen');
+    hideElementById('final-score-section');
     showElementById('playground');
+    //reset value
+    setTextElementValueById('current-score', 0);
+    setTextElementValueById('current-life', 5);
     continueGame();
 }
 
+function gameOver() {
+    hideElementById('playground');
+    showElementById('final-score-section');
+    const finalScore = getTextElementValueById('current-score');
+    setTextElementValueById('final-score', finalScore)
+
+    // clear last selected key background color
+    const currentAlphabet = getElementTextById('current-alphabet');
+    removeBackgroundColorById(currentAlphabet)
+}
