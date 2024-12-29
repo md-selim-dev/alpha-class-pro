@@ -1,9 +1,17 @@
 
+let isPlayBtnClick = false;
+
+let dynamicBg = document.getElementById('artboard-bg');
+
+const openModal = document.getElementById('open-modal');
+
+let audio = new Audio()
+
 function handleKeyboardKeyUpEvent(e) {
     const playerPressed = e.key;
-
+    if (isPlayBtnClick === false) return;
     // game over for pressed Esc button
-    if(playerPressed === 'Escape'){
+    if (playerPressed === 'Escape') {
         gameOver();
     }
     const currentAlphabetElement = document.getElementById('current-alphabet');
@@ -12,6 +20,8 @@ function handleKeyboardKeyUpEvent(e) {
 
     //check alphabet matched or not
     if (playerPressed === expectedAlphabet) {
+        audio.src = "../audio/key-press.mp3"
+        audio.play()
         removeBackgroundColorById(expectedAlphabet);
         const currentScore = getTextElementValueById('current-score')
         const newScore = currentScore + 1;
@@ -21,8 +31,11 @@ function handleKeyboardKeyUpEvent(e) {
     else {
         const currentLife = getTextElementValueById('current-life');
         const newLife = currentLife - 1;
+        audio.src = "../audio/error-sound.wav"
+        audio.play();
         setTextElementValueById('current-life', newLife)
-
+        const newLifePercentage = (100 / 5) * newLife;
+        dynamicBg.style.background = `linear-gradient(#FFFFFFB3 ${newLifePercentage}%, red)`;
         if (newLife === 0) {
             gameOver();
         }
@@ -31,8 +44,6 @@ function handleKeyboardKeyUpEvent(e) {
 }
 
 document.addEventListener('keyup', handleKeyboardKeyUpEvent)
-
-
 
 function continueGame() {
     // step -1 : generate a random alphabet
@@ -53,6 +64,7 @@ function play() {
     setTextElementValueById('current-score', 0);
     setTextElementValueById('current-life', 5);
     continueGame();
+    isPlayBtnClick = true;
 }
 
 function gameOver() {
@@ -63,5 +75,15 @@ function gameOver() {
 
     // clear last selected key background color
     const currentAlphabet = getElementTextById('current-alphabet');
-    removeBackgroundColorById(currentAlphabet)
+    removeBackgroundColorById(currentAlphabet);
+    isPlayBtnClick = false;
+    dynamicBg.style.background = "linear-gradient(#FFFFFFB3 100%, red)";
 }
+
+function openModalFunc(event){
+    if(event.clientY < 10){
+        openModal.showModal();
+    }
+}
+
+document.body.addEventListener('mousemove', openModalFunc)
